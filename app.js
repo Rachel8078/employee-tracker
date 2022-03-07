@@ -1,4 +1,20 @@
 const inquirer = require('inquirer');
+const mysql = require("mysql2");
+
+// MySQL login information
+const db = mysql.createConnection({
+    host: 'localhost',
+    // Your MySQL username,
+    user: 'root',
+    // Your MySQL password
+    password: 'J6W!O',
+    database: 'employee_tracker'
+});
+
+// Connect to database
+db.connect(err => {
+    if (err) throw err;
+});
 
 const promptUser = () => {
     inquirer.prompt([
@@ -35,22 +51,40 @@ const promptUser = () => {
         });
 }
 
-// View all departments
+// IF User selects 'View all departments'
 const displayDepartments = () => {
-    console.log("view all departments here")
     // THEN I am presented with a formatted table showing department names and department ids
+    const sql = `SELECT * FROM department`;
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        // TO DO: get formatted table to show instead of console log
+        console.table(result);
+        promptUser();
+        })
 };
 
 // View All Roles
 const displayRoles = () => {
-    console.log("view all roles here")
     // THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
+    const sql = `SELECT * FROM role`;
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        // TO DO: get formatted table to show instead of console log
+        console.table(result);
+        promptUser();
+        })
 };
 
 // View All Employees
 const displayEmployees = () => {
-    console.log("view all employees here")
     // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+    const sql = `SELECT * FROM employee`;
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        // TO DO: get formatted table to show instead of console log
+        console.table(result);
+        promptUser();
+        })
 };
 
 // If User chooses to 'Add a Department'
@@ -73,7 +107,8 @@ const promptDepartment = () => {
     ])
     .then((department) => {
         // add department to the database
-
+        console.log("department added to database");
+        promptUser();
     })
 };
 
@@ -204,7 +239,7 @@ const promptUpdateRole = () => {
                     return false;
                 }
             } 
-        }
+        },
         {
             type: 'input',
             name: 'role',
