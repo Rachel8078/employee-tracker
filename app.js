@@ -90,7 +90,7 @@ const displayEmployees = () => {
 // If User chooses to 'Add a Department'
 // THEN I am prompted to enter the name of the department and that department is added to the database
 const promptDepartment = () => {
-    inquirer.prompt([
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'department',
@@ -105,11 +105,20 @@ const promptDepartment = () => {
             } 
         }
     ])
-    .then((department) => {
+    .then(({ department }) => {
         // add department to the database
-        console.log("department added to database");
-        promptUser();
+        const sql = `INSERT INTO department (name)
+                    VALUES (?)`;
+        const params = department;
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(department + " has been added to the database.");
+        })
     })
+    // TO DO: format this better so prompt user runs after the console log
+    .then(promptUser);
 };
 
 // If User chooses to 'Add a Role'
@@ -118,7 +127,7 @@ const promptRole = () => {
     inquirer.prompt([
         {
             type: 'input',
-            name: 'role',
+            name: 'title',
             message: "What role you would like to add?",
             validate: roleInput => {
                 if (roleInput) {
@@ -156,9 +165,23 @@ const promptRole = () => {
             } 
         },
     ])
-    .then((role) => {
-        // add role name, salary, and department for the role to the database
+    .then(({ title, salary, department }) => {
+        // add role to the database
+        const sql = `INSERT INTO role (title, salary, department)
+                    VALUES (?, ?, ?)`;
+        // TO DO: figure out how to link department with department_id (join tables first?)
+        const department_id = /
+        const params = [title, salary, department_id];
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(result);
+            console.log(title + " has been added to the database.");
+        })
     })
+    // TO DO: format this better so prompt user runs after the console log
+    .then(promptUser);
 };
 
 // If User chooses to 'Add an Employee'
@@ -256,8 +279,19 @@ const promptUpdateRole = () => {
     ])
     .then((employee) => {
         // THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+        // const sql = `UPDATE role
+        //             SET role_id = ?
+        //             WHERE id = ?`;
+        // const role = 1;
+        // const id = 1;
+        // db.query(sql, role, id, (err, result) => {
+        //     if(err) throw err;
+        //     // TO DO: get formatted table to show instead of console log
+        //     console.table(result);
+        //     promptUser();
+        //     })
     })
 };
 
 // Start app with initial prompt
-promptUser();
+promptUser()
