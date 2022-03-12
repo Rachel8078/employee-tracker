@@ -1,20 +1,6 @@
 const inquirer = require('inquirer');
-const mysql = require("mysql2");
-
-// MySQL login information
-const db = mysql.createConnection({
-    host: 'localhost',
-    // Your MySQL username,
-    user: 'root',
-    // Your MySQL password
-    password: 'J6W!O',
-    database: 'employee_tracker'
-});
-
-// Connect to database
-db.connect(err => {
-    if (err) throw err;
-});
+const table = require('console.table');
+const db = require('./db/connection');
 
 const promptAction = () => {
     console.log(`
@@ -53,7 +39,7 @@ const displayDepartments = () => {
     db.query(sql, (err, result) => {
         if(err) throw err;
         // TO DO: get formatted table to show instead of console log
-        console.log(result);
+        // console.log(result);
         console.table(result);
         promptAction();
         })
@@ -62,7 +48,7 @@ const displayDepartments = () => {
 // View All Roles
 const displayRoles = () => {
     // THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-    const sql = `SELECT role.title, department.name AS department_name 
+    const sql = `SELECT role.title, role.id AS role_id, department.name AS department, role.salary
                 FROM role
                 LEFT JOIN department ON role.department_id = department.id`;
     db.query(sql, (err, result) => {
@@ -76,9 +62,10 @@ const displayRoles = () => {
 // View All Employees
 const displayEmployees = () => {
     // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-    const sql = `SELECT employee.first_name, employee.last_name, role.title AS role_title
+    const sql = `SELECT *
                 FROM employee
-                LEFT JOIN role ON employee.role_id = role.id`;
+                LEFT JOIN role ON employee.role_id = role.title
+                `;
     db.query(sql, (err, result) => {
         if(err) throw err;
         // TO DO: get formatted table to show instead of console log
@@ -115,11 +102,9 @@ const addDepartment = () => {
                 console.log(err);
             }
             console.log(department + " has been added to the database.");
+            promptAction();
         })
     })
-    .then(promptAction);
-    // TO DO: FIX this so prompt user runs after the console log
-    // promptAction();
 };
 
 // If User chooses to 'Add a Role'
@@ -235,13 +220,13 @@ const addEmployee = () => {
             } 
         },
         {
-            type: 'expand',
+            type: 'input',
             name: 'role_id',
             message: "What is the employee's role?",
             choices: roleChoices,
         },
         {
-            type: 'expand',
+            type: 'input',
             name: 'manager_id',
             message: "Who is the employee's manager?",
             choices: managerChoices
