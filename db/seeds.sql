@@ -5,26 +5,27 @@ VALUES
   ('Customer Service'),
   ('Marketing'),
   ('IT'),
-  ('Sales');
+  ('Sales'),
+  ('Finance'),
+  ('Operations');
 
 INSERT INTO role (title, salary, department_id)
 VALUES
-  ('Manager', 100000, 1),
-  ('Manager', 100000, 2),
-  ('Manager', 100000, 3),
-  ('Manager', 100000, 4),
-  ('Associate', 50000, 1),
-  ('Associate', 50000, 2),
-  ('Associate', 50000, 3),
-  ('Associate', 50000, 4),
-  ('Associate', 50000, 5),
-  ('Intern', 30000, 5),
-  ('Intern', 30000, 1);
+  ('Operations Manager', 150000, 8),
+  ('CEO', 1000000, 8),
+  ('CFO', 1000000, 7),
+  ('Accountant', 100000, 1),
+  ('HR', 65000, 2),
+  ('Director', 80000, 4),
+  ('Software Engineer', 120000, 5),
+  ('Sales Rep', 50000, 6),
+  ('CS Rep', 30000, 3);
   
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-  ('Ronald', 'Firbank', 1, NULL),
-  ('Virginia', 'Woolf', 5, 1),
+  ('Rachel', 'Marriott', 2, NULL),
+  ('Ronald', 'Firbank', 1, 1),
+  ('Virginia', 'Woolf', 5, 2),
   ('Piers', 'Gaveston', 2, 5),
   ('Charles', 'LeRoi', 6, 1),
   ('Katherine', 'Mansfield', 2, 1),

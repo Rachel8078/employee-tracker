@@ -177,24 +177,23 @@ const addRole = () => {
 // If User chooses to 'Add an Employee'
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager
 const addEmployee = () => {
-   
+    // get list of roles for choices list
     db.query(`SELECT * FROM role`, (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        // let roleChoices = result;
-        console.log(result);
-    })
+        if(err) throw err;
+        const roleOptions = result.map(({ id, title }) => ({
+            value: id,
+            name: `${id} ${title}`,
+        }));
 
+    // get a list of managers for choices list    
     db.query(`SELECT * FROM employee WHERE role_id = 1`, (err, result) => {
         if (err) {
             console.log(err);
         }
-        // let managerChoices = result;
-        console.log(result);
-    })
-    
-    
+        const managerOptions = result.map(({ id, first_name, last_name }) => ({
+            value: id,
+            name: `${id} ${first_name} ${last_name}`,
+        }));   
 
     inquirer.prompt([
         {
@@ -224,17 +223,17 @@ const addEmployee = () => {
             } 
         },
         {
-            type: 'input',
+            type: 'list',
             name: 'role_id',
             message: "What is the employee's role?",
-            choices: roleChoices,
+            choices: roleOptions
         },
         {
-            type: 'input',
+            type: 'list',
             name: 'manager_id',
             message: "Who is the employee's manager?",
-            choices: managerChoices
-        },
+            choices: managerOptions
+        }
     ])
     .then(({ first_name, last_name, role_id, manager_id }) => {
         // add employee to the database
@@ -246,44 +245,70 @@ const addEmployee = () => {
             if (err) {
                 console.log(err);
             }
-            console.log(result);
             console.log(first_name + " " + last_name + " has been added to the database.");
             promptAction();
         })
     })
-}
+    })
+    })
+};
 
 // If User chooses to 'Update an Employee Role'
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 const updateRole = () => {
+        // get list of employees for choices list
+        db.query(`SELECT * FROM employee`, (err, result) => {
+            if(err) throw err;
+            const employeeOptions = result.map(({ id, first_name, last_name }) => ({
+                value: id,
+                name: `${id} ${first_name} ${last_name}`,
+            }));
+    
+        // get a list of roles for choices list    
+        db.query(`SELECT * FROM role`, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            const roleOptions = result.map(({ id, title }) => ({
+                value: id,
+                name: `${id} ${title}`,
+            }));
+
     inquirer.prompt([
         {
             type: 'list',
-            name: 'name',
+            name: 'employee',
             message: "What is the employee's name?",
-            choices: employeeList
+            choices: employeeOptions
         },
         {
-            type: 'input',
-            name: 'role',
+            type: 'list',
+            name: 'role_id',
             message: "What is the employee's updated role?",
-            choices: roleList
+            choices: roleOptions
         }
     ])
-    .then((employee) => {
-        // THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-        // const sql = `UPDATE role
-        //             SET role_id = ?
-        //             WHERE id = ?`;
-        // const role = 1;
-        // const id = 1;
-        // db.query(sql, role, id, (err, result) => {
-        //     if(err) throw err;
-        //     // TO DO: get formatted table to show instead of console log
-        //     console.table(result);
-        //     promptAction();
-        //     })
-    })
+    .then(({ employee, role_id }) => {
+        // update employee in the database
+        const sql = `UPDATE employee 
+                    SET role_id = ?
+                    WHERE employee = ?
+                    `;
+        const params = [employee, role_id];
+        // const sql = `UPDATE employee.role SET role_id = ?
+        //             WHERE id = ?`
+        // const params = [first_name, last_name, role_id];
+    
+        db.query(sql, params, (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log(employee + "'s job title has been changed to " + role_id + " in the database.");
+                promptAction();
+            })
+        })
+})
+})
 };
 
 // Start app with initial prompt
