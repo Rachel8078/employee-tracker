@@ -38,8 +38,6 @@ const displayDepartments = () => {
     const sql = `SELECT * FROM department`;
     db.query(sql, (err, result) => {
         if(err) throw err;
-        // TO DO: get formatted table to show instead of console log
-        // console.log(result);
         console.table(result);
         promptAction();
         })
@@ -62,10 +60,6 @@ const displayRoles = () => {
 // View All Employees
 const displayEmployees = () => {
     // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-
-    // TO DO: get job_title to replace role_id
-    // TO DO: get manager_name to replace manager_id
-
     const sql = `SELECT employee.id, employee.first_name, employee.last_name,  
                 role.title AS job_title, 
                 department.name AS department_name, 
@@ -119,6 +113,16 @@ const addDepartment = () => {
 // If User chooses to 'Add a Role'
 // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
 const addRole = () => {
+    // get list of departments for choices list
+    const sql = `SELECT * FROM department`;
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        const departmentOptions = result.map(({ id, name }) => ({
+            value: id,
+            name: `${id} ${name}`,
+        }));
+    
+
     inquirer.prompt([
         {
             type: 'input',
@@ -147,36 +151,27 @@ const addRole = () => {
             } 
         },
         {
-            type: 'input',
-            name: 'department',
+            type: 'list',
+            name: 'department_id',
             message: "What department is that role in?",
-            validate: deptInput => {
-                if (deptInput) {
-                    return true;
-                } else {
-                    console.log("Required");
-                    return false;
-                }
-            } 
-        },
+            choices: departmentOptions
+        }
     ])
-    .then(({ title, salary, department }) => {
+    
+    .then(({ title, salary, department_id }) => {
         // add role to the database
-        const sql = `INSERT INTO role (title, salary, department)
+        const sql = `INSERT INTO role (title, salary, department_id)
                     VALUES (?, ?, ?)`;
-        // TO DO: figure out how to link department with department_id (join tables first?)
-        // const department_id = /
         const params = [title, salary, department_id];
         db.query(sql, params, (err, result) => {
             if (err) {
                 console.log(err);
             }
-            console.log(result);
             console.log(title + " has been added to the database.");
+            promptAction();
         })
     })
-    // TO DO: format this better so prompt user runs after the console log
-    .then(promptAction);
+    })
 };
 
 // If User chooses to 'Add an Employee'
@@ -253,10 +248,9 @@ const addEmployee = () => {
             }
             console.log(result);
             console.log(first_name + " " + last_name + " has been added to the database.");
+            promptAction();
         })
     })
-    // TO DO: format this better so prompt user runs after the console log
-    .then(promptAction);
 }
 
 // If User chooses to 'Update an Employee Role'
@@ -264,30 +258,16 @@ const addEmployee = () => {
 const updateRole = () => {
     inquirer.prompt([
         {
-            type: 'input',
+            type: 'list',
             name: 'name',
             message: "What is the employee's name?",
-            validate: nameInput => {
-                if (nameInput) {
-                    return true;
-                } else {
-                    console.log("Required");
-                    return false;
-                }
-            } 
+            choices: employeeList
         },
         {
             type: 'input',
             name: 'role',
             message: "What is the employee's updated role?",
-            validate: roleInput => {
-                if (roleInput) {
-                    return true;
-                } else {
-                    console.log("Required");
-                    return false;
-                }
-            } 
+            choices: roleList
         }
     ])
     .then((employee) => {
