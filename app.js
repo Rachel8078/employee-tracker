@@ -62,13 +62,22 @@ const displayRoles = () => {
 // View All Employees
 const displayEmployees = () => {
     // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-    const sql = `SELECT *
+
+    // TO DO: get job_title to replace role_id
+    // TO DO: get manager_name to replace manager_id
+
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name,  
+                role.title AS job_title, 
+                department.name AS department_name, 
+                role.salary,
+                CONCAT(manager.first_name, '', manager.last_name) AS manager
                 FROM employee
-                LEFT JOIN role ON employee.role_id = role.title
+                LEFT JOIN role ON employee.role_id = role.id
+                LEFT JOIN department ON role.department_id = department.id
+                LEFT JOIN employee manager ON manager.id = employee.manager_id
                 `;
     db.query(sql, (err, result) => {
         if(err) throw err;
-        // TO DO: get formatted table to show instead of console log
         console.table(result);
         promptAction();
         })
