@@ -8,7 +8,6 @@ Command line app to view and manage the departments, roles, and employees in a c
 * Node.js
 * Inquirer NPM
 * JavaScript
-* Express
 * MySQL
 
 
@@ -16,7 +15,7 @@ Command line app to view and manage the departments, roles, and employees in a c
 https://github.com/Rachel8078/employee-tracker
 
 ## Video Walkthrough Link
-
+https://drive.google.com/file/d/1HYdWM-wwqH17q-F4WtcrA08TlrTUDQEz/view
 
 ## Screenshot
 ![](./assets/images/employee-tracker.png)
