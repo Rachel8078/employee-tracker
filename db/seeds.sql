@@ -11,9 +11,9 @@ VALUES
 
 INSERT INTO role (title, salary, department_id)
 VALUES
-  ('Operations Manager', 150000, 8),
   ('CEO', 1000000, 8),
   ('CFO', 1000000, 7),
+  ('Operations Manager', 150000, 8),
   ('Accountant', 100000, 1),
   ('HR', 65000, 2),
   ('Director', 80000, 4),
@@ -23,14 +23,12 @@ VALUES
   
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-  ('Rachel', 'Marriott', 2, NULL),
-  ('Ronald', 'Firbank', 1, 1),
-  ('Virginia', 'Woolf', 5, 2),
-  ('Piers', 'Gaveston', 2, 5),
-  ('Charles', 'LeRoi', 6, 1),
-  ('Katherine', 'Mansfield', 2, 1),
-  ('Dora', 'Carrington', 2, 8),
-  ('Edward', 'Bellamy', 7, 1),
-  ('Montague', 'Summers', 2, 1),
-  ('Octavia', 'Butler', 3, 10),
-  ('Unica', 'Zurn', 3, 1);
+  ('Ronald', 'Firbank', 1, NULL),
+  ('Virginia', 'Woolf', 2, 1),
+  ('Piers', 'Gaveston', 3, 1),
+  ('Charles', 'LeRoi', 4, 3),
+  ('Katherine', 'Mansfield', 5, 3),
+  ('Dora', 'Carrington', 6, 3),
+  ('Edward', 'Bellamy', 7, 3),
+  ('Montague', 'Summers', 8, 3),
+  ('Octavia', 'Butler', 9, 3);

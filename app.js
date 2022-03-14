@@ -2,9 +2,8 @@ const inquirer = require("inquirer");
 const table = require("console.table");
 const db = require("./db/connection");
 
+// prompt app options
 const promptAction = () => {
-  console.log(`
-`);
   return inquirer
     .prompt([
       {
@@ -87,8 +86,8 @@ const displayEmployees = () => {
 };
 
 // If User chooses to 'Add a Department'
-// THEN I am prompted to enter the name of the department and that department is added to the database
 const addDepartment = () => {
+  // THEN I am prompted to enter the name of the department and that department is added to the database
   return inquirer
     .prompt([
       {
@@ -196,7 +195,7 @@ const addEmployee = () => {
     }));
 
     // get a list of managers for choices list
-    db.query(`SELECT * FROM employee WHERE role_id = 1`, (err, result) => {
+    db.query(`SELECT * FROM employee`, (err, result) => {
       if (err) {
         console.log(err);
       }
@@ -314,12 +313,8 @@ const updateRole = () => {
             if (err) {
               console.log(err);
             }
-            console.log(
-              employee +
-                "'s job title has been changed to " +
-                role_id +
-                " in the database."
-            );
+            console.log("Role updated!");
+
             promptAction();
           });
         });
